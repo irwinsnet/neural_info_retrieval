@@ -2,8 +2,8 @@
 
 The IndexedFile builds an index for a JSONL, TSV, or other delimited
 file. Once the index is built, any record can be quickly accessed  with
-it's unique key value. The index is saved to disk after it is created.
-The indexes file name is the the source file name with 'pickled-index'
+its unique key value. The index is saved to disk after it is created.
+The indexed file name is the source file name with 'pickled-index'
 added to the end.
 
 IndexedFile assumes that there is a unique key value for every line in
@@ -23,12 +23,16 @@ import pickle
 class IndexedFile():
     """Represents an indexed JSONL, TSV, or other delimited file.
 
+    The constructor checks to see if an index already exists for the
+    file. If not, a new index is created and saved to the same location
+    as the text file.
+
     Constructor arguments:
-        input_file_path: The absolute path to the JSONL, TSV or other
+        input_file_path: The path to the JSONL, TSV or other
             delimited text file.
         key_idx: Specifies the location of the key value within each
              line of the source text file. For delimited files like TSV
-             or CSV, key shoudl be an integer that identifies the
+             or CSV, key should be an integer that identifies the
              position of the column that contains the key, starting at 0
              for the leftmost column. For JSONL files, key should be a
              string containing the dictionary key that contains the
@@ -56,7 +60,10 @@ class IndexedFile():
     idx_file.close()
     """
     def __init__(self, input_file_path, key_idx, delim='\t', line_idx=False):
-        """Creates index or reads index from disk."""
+        """Creates index or reads index from disk.
+        
+        See the class documentation for a description of the parameters.
+        """
         # Check arguments
         if not os.path.isfile(input_file_path):
             raise ValueError('Input file "{}" does not exist.'
